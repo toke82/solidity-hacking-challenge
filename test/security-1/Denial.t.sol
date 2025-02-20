@@ -12,7 +12,9 @@ contract DenialTest is Test {
     address owner = address(0xA9E);
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED CHANGE ANYTHING HERE
+         */
 
         // Deploy contract
         dripWallet = new Denial();
@@ -25,7 +27,9 @@ contract DenialTest is Test {
     }
 
     function testExploit() public {
-        /** YOUR EXPLOIT CODE HERE */
+        /**
+         * YOUR EXPLOIT CODE HERE
+         */
 
         // Deploy attacker contract
         attackerContract = new Attacker(dripWallet);
@@ -34,15 +38,16 @@ contract DenialTest is Test {
         assertEq(address(attackerContract), dripWallet.partner());
 
         // call function withdraw to activate the exploit
-        (bool success, ) = address(dripWallet).call{gas: 1000000}(abi.encodeWithSignature("withdraw()"));
+        (bool success,) = address(dripWallet).call{gas: 1000000}(abi.encodeWithSignature("withdraw()"));
         require(!success, "Withdraw did not revert as expected");
 
         _checkSolved();
     }
 
     function _checkSolved() internal {
-        /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
-
+        /**
+         * SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE
+         */
         assertGt(address(dripWallet).balance, 0);
 
         // should revert on withdraw
