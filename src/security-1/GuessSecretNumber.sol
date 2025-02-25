@@ -40,11 +40,4 @@ contract Attacker {
             }
         }
     }
-
-    // Attack the contract
-    function attack() external payable {
-        require(msg.value == 1 ether, "Attacker: need to send 1 ether to constructor");
-        guessTheSecretNumner.guess{value: 1 ether}(secretNumber);
-    }
-
 }
