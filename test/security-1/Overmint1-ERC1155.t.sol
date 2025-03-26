@@ -14,16 +14,24 @@ contract Overmint1_ERC1155Test is Test {
         overmint = new Overmint1_ERC1155();
 
         // Deploy "attackerContract"
-        attackerContract = new Attacker();
+        attackerContract = new Attacker(address(overmint));
     }
 
     function testOverMint() public {
         /** CODE YOUR SOLUTION HERE */
 
+        console.log("Balance before attack: ", overmint.balanceOf(address(attackerContract), 0));
+
+        vm.startPrank(address(attackerContract));
+        attackerContract.attack(0); // Exploit the vulnerability
+        vm.stopPrank();
+
+        console.log("Balance after attack: ", overmint.balanceOf(address(attackerContract), 0));
+        
         _checkSolved();
     }
 
-    function _checkSolved() internal {
+    function _checkSolved() internal view {
         /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
 
         assertTrue(overmint.success(address(attackerContract), 0));

